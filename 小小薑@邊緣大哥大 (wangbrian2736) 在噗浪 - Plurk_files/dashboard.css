@@ -1,0 +1,65 @@
+/* For Perma2 */
+.html5 #dashboard_holder #plurk_responses #reply .responses, 
+.html5 #reply #reply_box,
+.html5 #dashboard_holder #plurker_info #shareUser {
+    background: white;
+    border: 8px solid #CCC;
+} 
+.html5 #shareUser h2 {
+    color: black;
+}
+
+.dash-segment .segment-content{
+    margin-top:4px;
+    background:none;
+    border-radius:0;
+}
+ 
+/* Original Theme */
+#toggle_tab li.tt_selected, #plurk-dashboard {  
+    background: white;
+    color: black;
+    border: 8px solid #ccc;
+}
+
+#plurk-dashboard .dash-segment #dash-friends #dashboard-usersearch #loc_field {
+    background-color: #DDD;
+}
+
+#plurk-dashboard .dash-segment #dash-stats table td {
+    color: black;
+}
+
+#plurk-dashboard .dash-segment #dash-additional-info #about_me a {
+    color: #0435D2;
+}
+
+#dashboard_holder a {
+    color: #BFBFBF;
+}
+
+#toggle_tab li.tt_selected {
+    border: 1px solid #ccc;
+}
+
+#plurk-dashboard h2{
+    background: transparent;
+    border-bottom: 3px solid #888;
+}
+
+#reply h2{
+    background:#948c78;
+}
+#reply .char_updater{
+    color:#4f4631;
+}
+
+textarea#input_permalink, .clipboard {
+    border-color: #dfddd3;
+    border-top-color: #857b62;
+    border-left-color: #857b62;
+}
+
+#sharePlurk, #sharePlurk div {
+    background: transparent;
+}

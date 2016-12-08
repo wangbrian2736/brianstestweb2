@@ -1,0 +1,635 @@
+/*!
+ PowerTip - v1.2.0 - 2013-04-03
+ http://stevenbenner.github.com/jquery-powertip/
+ Copyright (c) 2013 Steven Benner (http://stevenbenner.com/).
+ Released under MIT license.
+ https://raw.github.com/stevenbenner/jquery-powertip/master/LICENSE.txt
+*/
+(function(e){"function"==typeof define&&define.amd?define(["jquery"],e):e(jQuery)})(function(e){function t(){var t=this;t.top="auto",t.left="auto",t.right="auto",t.bottom="auto",t.set=function(o,n){e.isNumeric(n)&&(t[o]=Math.round(n))}}function o(e,t,o){function n(n,i){r(),e.data(v)||(n?(i&&e.data(m,!0),o.showTip(e)):(P.tipOpenImminent=!0,l=setTimeout(function(){l=null,s()},t.intentPollInterval)))}function i(n){r(),P.tipOpenImminent=!1,e.data(v)&&(e.data(m,!1),n?o.hideTip(e):(P.delayInProgress=!0,l=setTimeout(function(){l=null,o.hideTip(e),P.delayInProgress=!1},t.closeDelay)))}function s(){var i=Math.abs(P.previousX-P.currentX),s=Math.abs(P.previousY-P.currentY),r=i+s;t.intentSensitivity>r?o.showTip(e):(P.previousX=P.currentX,P.previousY=P.currentY,n())}function r(){l=clearTimeout(l),P.delayInProgress=!1}function a(){o.resetPosition(e)}var l=null;this.show=n,this.hide=i,this.cancel=r,this.resetPosition=a}function n(){function e(e,i,r,a,l){var p,c=i.split("-")[0],u=new t;switch(p=s(e)?n(e,c):o(e,c),i){case"n":u.set("left",p.left-r/2),u.set("bottom",P.windowHeight-p.top+l);break;case"e":u.set("left",p.left+l),u.set("top",p.top-a/2);break;case"s":u.set("left",p.left-r/2),u.set("top",p.top+l);break;case"w":u.set("top",p.top-a/2),u.set("right",P.windowWidth-p.left+l);break;case"nw":u.set("bottom",P.windowHeight-p.top+l),u.set("right",P.windowWidth-p.left-20);break;case"nw-alt":u.set("left",p.left),u.set("bottom",P.windowHeight-p.top+l);break;case"ne":u.set("left",p.left-20),u.set("bottom",P.windowHeight-p.top+l);break;case"ne-alt":u.set("bottom",P.windowHeight-p.top+l),u.set("right",P.windowWidth-p.left);break;case"sw":u.set("top",p.top+l),u.set("right",P.windowWidth-p.left-20);break;case"sw-alt":u.set("left",p.left),u.set("top",p.top+l);break;case"se":u.set("left",p.left-20),u.set("top",p.top+l);break;case"se-alt":u.set("top",p.top+l),u.set("right",P.windowWidth-p.left)}return u}function o(e,t){var o,n,i=e.offset(),s=e.outerWidth(),r=e.outerHeight();switch(t){case"n":o=i.left+s/2,n=i.top;break;case"e":o=i.left+s,n=i.top+r/2;break;case"s":o=i.left+s/2,n=i.top+r;break;case"w":o=i.left,n=i.top+r/2;break;case"nw":o=i.left,n=i.top;break;case"ne":o=i.left+s,n=i.top;break;case"sw":o=i.left,n=i.top+r;break;case"se":o=i.left+s,n=i.top+r}return{top:n,left:o}}function n(e,t){function o(){d.push(p.matrixTransform(u))}var n,i,s,r,a=e.closest("svg")[0],l=e[0],p=a.createSVGPoint(),c=l.getBBox(),u=l.getScreenCTM(),f=c.width/2,w=c.height/2,d=[],h=["nw","n","ne","e","se","s","sw","w"];if(p.x=c.x,p.y=c.y,o(),p.x+=f,o(),p.x+=f,o(),p.y+=w,o(),p.y+=w,o(),p.x-=f,o(),p.x-=f,o(),p.y-=w,o(),d[0].y!==d[1].y||d[0].x!==d[7].x)for(i=Math.atan2(u.b,u.a)*O,s=Math.ceil((i%360-22.5)/45),1>s&&(s+=8);s--;)h.push(h.shift());for(r=0;d.length>r;r++)if(h[r]===t){n=d[r];break}return{top:n.y+P.scrollTop,left:n.x+P.scrollLeft}}this.compute=e}function i(o){function i(e){e.data(v,!0),O.queue(function(t){s(e),t()})}function s(e){var t;if(e.data(v)){if(P.isTipOpen)return P.isClosing||r(P.activeHover),O.delay(100).queue(function(t){s(e),t()}),void 0;e.trigger("powerTipPreRender"),t=p(e),t&&(O.empty().append(t),e.trigger("powerTipRender"),P.activeHover=e,P.isTipOpen=!0,O.data(g,o.mouseOnToPopup),o.followMouse?a():(b(e),P.isFixedTipOpen=!0),O.fadeIn(o.fadeInTime,function(){P.desyncTimeout||(P.desyncTimeout=setInterval(H,500)),e.trigger("powerTipOpen")}))}}function r(e){P.isClosing=!0,P.activeHover=null,P.isTipOpen=!1,P.desyncTimeout=clearInterval(P.desyncTimeout),e.data(v,!1),e.data(m,!1),O.fadeOut(o.fadeOutTime,function(){var n=new t;P.isClosing=!1,P.isFixedTipOpen=!1,O.removeClass(),n.set("top",P.currentY+o.offset),n.set("left",P.currentX+o.offset),O.css(n),e.trigger("powerTipClose")})}function a(){if(!P.isFixedTipOpen&&(P.isTipOpen||P.tipOpenImminent&&O.data(T))){var e,n,i=O.outerWidth(),s=O.outerHeight(),r=new t;r.set("top",P.currentY+o.offset),r.set("left",P.currentX+o.offset),e=c(r,i,s),e!==I.none&&(n=u(e),1===n?e===I.right?r.set("left",P.windowWidth-i):e===I.bottom&&r.set("top",P.scrollTop+P.windowHeight-s):(r.set("left",P.currentX-i-o.offset),r.set("top",P.currentY-s-o.offset))),O.css(r)}}function b(t){var n,i;o.smartPlacement?(n=e.fn.powerTip.smartPlacementLists[o.placement],e.each(n,function(e,o){var n=c(y(t,o),O.outerWidth(),O.outerHeight());return i=o,n===I.none?!1:void 0})):(y(t,o.placement),i=o.placement),O.addClass(i)}function y(e,n){var i,s,r=0,a=new t;a.set("top",0),a.set("left",0),O.css(a);do i=O.outerWidth(),s=O.outerHeight(),a=k.compute(e,n,i,s,o.offset),O.css(a);while(5>=++r&&(i!==O.outerWidth()||s!==O.outerHeight()));return a}function H(){var e=!1;!P.isTipOpen||P.isClosing||P.delayInProgress||(P.activeHover.data(v)===!1||P.activeHover.is(":disabled")?e=!0:l(P.activeHover)||P.activeHover.is(":focus")||P.activeHover.data(m)||(O.data(g)?l(O)||(e=!0):e=!0),e&&r(P.activeHover))}var k=new n,O=e("#"+o.popupId);0===O.length&&(O=e("<div/>",{id:o.popupId}),0===d.length&&(d=e("body")),d.append(O)),o.followMouse&&(O.data(T)||(f.on("mousemove",a),w.on("scroll",a),O.data(T,!0))),o.mouseOnToPopup&&O.on({mouseenter:function(){O.data(g)&&P.activeHover&&P.activeHover.data(h).cancel()},mouseleave:function(){P.activeHover&&P.activeHover.data(h).hide()}}),this.showTip=i,this.hideTip=r,this.resetPosition=b}function s(e){return window.SVGElement&&e[0]instanceof SVGElement}function r(){P.mouseTrackingActive||(P.mouseTrackingActive=!0,e(function(){P.scrollLeft=w.scrollLeft(),P.scrollTop=w.scrollTop(),P.windowWidth=w.width(),P.windowHeight=w.height()}),f.on("mousemove",a),w.on({resize:function(){P.windowWidth=w.width(),P.windowHeight=w.height()},scroll:function(){var e=w.scrollLeft(),t=w.scrollTop();e!==P.scrollLeft&&(P.currentX+=e-P.scrollLeft,P.scrollLeft=e),t!==P.scrollTop&&(P.currentY+=t-P.scrollTop,P.scrollTop=t)}}))}function a(e){P.currentX=e.pageX,P.currentY=e.pageY}function l(e){var t=e.offset(),o=e[0].getBoundingClientRect(),n=o.right-o.left,i=o.bottom-o.top;return P.currentX>=t.left&&P.currentX<=t.left+n&&P.currentY>=t.top&&P.currentY<=t.top+i}function p(t){var o,n,i=t.data(y),s=t.data(H),r=t.data(k);return i?(e.isFunction(i)&&(i=i.call(t[0])),n=i):s?(e.isFunction(s)&&(s=s.call(t[0])),s.length>0&&(n=s.clone(!0,!0))):r&&(o=e("#"+r),o.length>0&&(n=o.html())),n}function c(e,t,o){var n=P.scrollTop,i=P.scrollLeft,s=n+P.windowHeight,r=i+P.windowWidth,a=I.none;return(n>e.top||n>Math.abs(e.bottom-P.windowHeight)-o)&&(a|=I.top),(e.top+o>s||Math.abs(e.bottom-P.windowHeight)>s)&&(a|=I.bottom),(i>e.left||e.right+t>r)&&(a|=I.left),(e.left+t>r||i>e.right)&&(a|=I.right),a}function u(e){for(var t=0;e;)e&=e-1,t++;return t}var f=e(document),w=e(window),d=e("body"),h="displayController",v="hasActiveHover",m="forcedOpen",T="hasMouseMove",g="mouseOnToPopup",b="originalTitle",y="powertip",H="powertipjq",k="powertiptarget",O=180/Math.PI,P={isTipOpen:!1,isFixedTipOpen:!1,isClosing:!1,tipOpenImminent:!1,activeHover:null,currentX:0,currentY:0,previousX:0,previousY:0,desyncTimeout:null,mouseTrackingActive:!1,delayInProgress:!1,windowWidth:0,windowHeight:0,scrollTop:0,scrollLeft:0},I={none:0,top:1,bottom:2,left:4,right:8};e.fn.powerTip=function(t,n){if(!this.length)return this;if("string"===e.type(t)&&e.powerTip[t])return e.powerTip[t].call(this,this,n);var s=e.extend({},e.fn.powerTip.defaults,t),a=new i(s);return r(),this.each(function(){var t,n=e(this),i=n.data(y),r=n.data(H),l=n.data(k);n.data(h)&&e.powerTip.destroy(n),t=n.attr("title"),i||l||r||!t||(n.data(y,t),n.data(b,t),n.removeAttr("title")),n.data(h,new o(n,s,a))}),s.manual||this.on({"mouseenter.powertip":function(t){e.powerTip.show(this,t)},"mouseleave.powertip":function(){e.powerTip.hide(this)},"focus.powertip":function(){e.powerTip.show(this)},"blur.powertip":function(){e.powerTip.hide(this,!0)},"keydown.powertip":function(t){27===t.keyCode&&e.powerTip.hide(this,!0)}}),this},e.fn.powerTip.defaults={fadeInTime:200,fadeOutTime:100,followMouse:!1,popupId:"powerTip",intentSensitivity:7,intentPollInterval:100,closeDelay:100,placement:"n",smartPlacement:!1,offset:10,mouseOnToPopup:!1,manual:!1},e.fn.powerTip.smartPlacementLists={n:["n","ne","nw","s"],e:["e","ne","se","w","nw","sw","n","s","e"],s:["s","se","sw","n"],w:["w","nw","sw","e","ne","se","n","s","w"],nw:["nw","w","sw","n","s","se","nw"],ne:["ne","e","se","n","s","sw","ne"],sw:["sw","w","nw","s","n","ne","sw"],se:["se","e","ne","s","n","nw","se"],"nw-alt":["nw-alt","n","ne-alt","sw-alt","s","se-alt","w","e"],"ne-alt":["ne-alt","n","nw-alt","se-alt","s","sw-alt","e","w"],"sw-alt":["sw-alt","s","se-alt","nw-alt","n","ne-alt","w","e"],"se-alt":["se-alt","s","sw-alt","ne-alt","n","nw-alt","e","w"]},e.powerTip={show:function(t,o){return o?(a(o),P.previousX=o.pageX,P.previousY=o.pageY,e(t).data(h).show()):e(t).first().data(h).show(!0,!0),t},reposition:function(t){return e(t).first().data(h).resetPosition(),t},hide:function(t,o){return t?e(t).first().data(h).hide(o):P.activeHover&&P.activeHover.data(h).hide(!0),t},destroy:function(t){return e(t).off(".powertip").each(function(){var t=e(this),o=[b,h,v,m];t.data(b)&&(t.attr("title",t.data(b)),o.push(y)),t.removeData(o)}),t}},e.powerTip.showTip=e.powerTip.show,e.powerTip.closeTip=e.powerTip.hide});
+var Banana = {
+    setup: function(target, uhash, country_code){
+        if(target) {
+            this.enabled = true;
+            this.target = target;
+        }
+        else {
+            this.enabled = false;
+        }
+        this.uhash = uhash;
+        if (!window.OpenX) return;
+        OpenX.init(country_code);
+    }
+};
+
+
+jQuery(document).ready(function($) {
+
+    tl_native = {
+        enable: false,
+        ads: [],
+        last_ts: 0,
+        ts_shuffle: 0,
+        virtual_id: 2000000001,
+        init: function() {
+            if (SiteState.getSessionUser() && !SiteState.getSessionUser().show_ads)
+                return;
+            if (typeof(nativeHandleRiverOnLoad) == 'function')
+                nativeHandleRiverOnLoad(tl_native.loadAds);
+        },
+        shuffle: function(ts) {
+            if (ts > tl_native.ts_shuffle + 180) {
+                tl_native.ads = shuffle(tl_native.ads);
+                tl_native.ts_shuffle = ts;
+            }
+        },
+        loadAds: function(data) {
+            if (SiteState.getSessionUser() && SiteState.getSessionUser().beta) {
+                console.log('[native] ads pre-fetched, count: ' + data.length)
+            }
+            for (i in data) {
+                 var ads = data[i];
+                 var plurk = {};
+                 ads.impression = 0;
+                 plurk.client = ads.sponser.replace(/Sponsored\s+(By\s+)?/i, '');
+                 plurk.owner_id = 13767068;
+                 plurk.plurk_id = (tl_native.virtual_id++);
+                 plurk.is_ad = true;
+                 plurk.is_y_native = true;
+                 plurk.logo_style = 'class="' + ads.adYahoo['class'] + '" src="' + ads.adYahoo['src'] + '" style=\'' + ads.adYahoo['style'] + '\' onclick="' + ads.adYahoo['onclick'] + '" onmouseenter="' + ads.adYahoo['onmouseenter'] + '" onmouseleave="' + ads.adYahoo['onmouseleave'] + '"';
+                 var rnd = Math.random();
+                 if (rnd < 0.3)
+                     plurk.content = '<div class="' + ads['class'] + '" code="' + ads.code + '" id="' + ads['id'] + '">' + ads.adContent.adTitle + '<a href="' + ads.adContent.apiUrl + '" class="ex_link meta" target="_blank"><img src="' + ads.adContent['img'] + '" style=\'background: ' + ads.adContent.imgCss + "'>" + ads.adContent.adBodyTextContent + '</a>';
+                 else if (rnd < 0.65)
+                     plurk.content = '<div class="' + ads['class'] + '" code="' + ads.code + '" id="' + ads['id'] + '">' + '<a href="' + ads.adContent.apiUrl + '" class="ex_link" target="_blank">' + ads.adContent.adTitle + '</a><br>' + ads.adContent.adBodyTextContent + '<br><img src="' + ads.adContent['img'] + '" style=\'width: 50px; background: ' + ads.adContent.imgCss + "'>";
+                 else
+                     plurk.content = '<div class="' + ads['class'] + '" code="' + ads.code + '" id="' + ads['id'] + '">' + ads.adContent.adBodyTextContent + '<a href="' + ads.adContent.apiUrl + '" class="ex_link meta" target="_blank"><img src="' + ads.adContent['img'] + '" style=\'background: ' + ads.adContent.imgCss + "'>" + ads.adContent.adTitle + '</a>';
+                 ads.plurk = plurk;
+            }
+            tl_native.ads = data;
+            tl_native.last_ts = new Date().getTime() / 1000;
+            tl_native.enable = (data.length > 0);
+        },
+        clickAds: function(plurk_id) {
+            jQuery('#p' + plurk_id + ' .text_holder a').click(function(e){
+                e.stopPropagation();
+                var name = jQuery('#p' + plurk_id + ' a.name')[0].text;
+                _gaq_push(['_trackEvent', 'TimelineNativeAds', 'click', name]);
+            });
+            jQuery('#p' + plurk_id + ' .text_holder a')[0].click();
+        }
+    };
+
+    tl_banana = {
+        enable: false,
+        plurk: {
+            /*
+            int: {    real PID of AD unit
+                data: json obj,    json data of AD unit plurk
+                impress: array,    Impressioned AD div ID (p+PID)
+                clickUrl: string,    url to open while click
+                logUrl: string,    url to call while impression
+                prob: float,    while multi ads, use probability to decision which to use
+            }
+            */
+        },
+        tID: null,    // timerID for checking impression interval, current 300ms
+        vpWidth: null, // Viewport width
+        timeLimit: null, // timerID to countdown for limit_time after AD make impression
+
+        limit_time: 5,  // only 1 imporession record within 5 minutes
+        limit_seen: 15, // only 1 ads for each 15 plurks
+
+        getVpWidth: function() {
+            this.vpWidth = jQuery(window).width();
+        },
+        
+        init: function() {
+            
+//          if (!window.SiteState || (!SiteState.getSessionUser())) return;    // limit to login user
+//          if (!SiteState.getSessionUser().beta) return;                      // limit to beta user
+//          if (!OpenX || OpenX.country_code != 'TW') return;
+//          if (!OpenX || !(OpenX.country_code == 'TW' || OpenX.country_code == 'HK' || OpenX.country_code == 'MO')) return;
+//          var zone = (SiteState.getSessionUser() && SiteState.getSessionUser().beta) ? 43 : 37;
+//          var zone = 37;
+
+            if (SiteState.getSessionUser() && !SiteState.getSessionUser().show_ads)
+                return;
+
+            var zone = (OpenX && OpenX.country_code == 'TW') ? 37 : 43;
+
+            OpenX.getAllAds(zone, function(ads) {
+                if (!ads || !Array.isArray(ads)) return;
+
+                tl_banana.getAdsData(ads).done(function(banana) {
+                    if (!Object.keys(banana).length) return;
+                    
+                    var totalprob = 0;
+                    for (i in banana)
+                        totalprob += banana[i].prob; 
+                    
+                    var sumprob = 0;
+                    for (i in banana){
+                        var prob = banana[i].prob / totalprob;
+                        banana[i].prob = prob + sumprob;
+                        sumprob += prob;
+                    };
+                    
+                    tl_banana.plurk = banana;
+                    tl_banana.enable = true;
+                    TimeLine.$timeline_holder.addClass('banana_show');
+                    
+                    $(window).resize(function() { tl_banana.getVpWidth() });
+                });
+            });
+            
+            this.getVpWidth();
+        },
+        
+        getAdsData: function(ads) {
+            var dfd = new jQuery.Deferred();
+            var banana = {};
+            var total = ads.length;
+            
+            ads.forEach(function(ad, index) {
+                var pid = ad.plurk;
+                
+                if (ad.probability == 0) return;
+                
+                banana[pid] = {
+                    url: ad.url,
+                    clickUrl: ad.clickUrl,
+                    logUrl: ad.logUrl,
+                    prob: ad.probability
+                };
+            
+                // Get each ad content
+                $.post(UrlPre + '/Responses/get2', { 'plurk_id': pid, 'include_plurk': 1, 'js_date': 0 })
+                    .success(function(data) {
+                        data = $.parseJSON(data);
+                        if (!data) {
+                            dfd.reject();
+                            return;
+                        };
+                         
+                        data.plurk.realId = data.plurk.id;
+                        data.plurk.id = data.plurk.plurk_id *= 1000;    //pid will decrease automatically
+                        data.plurk.is_ad = true;
+                        data.plurk.content += '<a href="http://www.plurk.com/p/' + data.plurk.realId.toString(36) + '" class="plink"></a>';
+                        banana[pid].data = data.plurk;
+                        banana[pid].impress = [];
+                        
+                        USERS[data.owner.uid] = data.owner;
+                        
+                        if (index + 1 == total)
+                            dfd.resolve(banana);
+                    });
+            });
+            
+            return dfd.promise();            
+        },
+        
+        clone: function(obj) {
+            //function for cloning json object
+            // from http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
+        
+            if (null == obj || "object" != typeof obj) return obj;
+            var copy = obj.constructor();
+            for (var attr in obj) {
+                if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+            }
+            return copy;            
+        },
+        
+        checkImpress: function() {
+            tl_banana.tID = null;
+            if (!TimeLine.$timeline_holder.hasClass('banana_show')) return;
+            
+            var $ads = TimeLine.$timeline_holder.children('#timeline_cnt').children('.block_cnt').children('.banana_plurk')
+            
+            if ($ads.length){
+                $ads.each(function() {
+                    var $ad = $(this);
+                    var fakePid = this.id.substr(1);
+                    var pid = fakePid.substr(0, fakePid.length - 3);
+                    
+                    // don't make duplicate impression for same ad
+                    if ($.inArray(fakePid, tl_banana.plurk[pid].impress) > -1) return;
+                    
+                    var pleft = $ad.offset().left;
+                    if (!pleft || (pleft > tl_banana.vpWidth) || pleft < 0) return;
+
+                    tl_banana.plurk[pid].impress.push(fakePid);
+                    $.ajax(tl_banana.plurk[pid].logUrl);
+
+                    $ad.addClass('impress');    // keep impress ad on timeline
+                    TimeLine.$timeline_holder.removeClass('banana_show');    // hide all other ads
+                    tl_banana.timeLimit = window.setTimeout(tl_banana.clearImpress, tl_banana.limit_time * 60 * 1000);
+                    
+                    if (SiteState.getSessionUser() && SiteState.getSessionUser().beta && console)
+                        console.log('[ads] impression', tl_banana.plurk[pid].impress, this.id, pleft);
+                    _gaq_push(['_trackEvent', 'TimelineAds', 'impression']);
+                });
+            };
+        },
+        
+        clearImpress: function() {
+            // Reset impress log array after desire time period
+            // We may need to refetch ads at here.
+            tl_banana.timeLimit = null;
+            TimeLine.$timeline_holder.children('#timeline_cnt').children('.block_cnt').children('.banana_plurk')
+                .removeClass('impress');
+            TimeLine.$timeline_holder.addClass('banana_show');
+            
+            for (ad in tl_banana.plurk)
+                tl_banana.plurk[ad].impress = [];
+        },
+        
+        clickAds: function(div) {
+            var pid = div.id.toString().substr(1);
+            pid = pid.substr(0, pid.length - 3);
+
+            var url = tl_banana.plurk[pid].url;
+            if (SiteState.getSessionUser() && SiteState.getSessionUser().beta && console) {
+                console.log('[ads] click', url);
+            }
+            _gaq_push(['_trackEvent', 'TimelineAdsClick', 'click']);
+
+            if (url == 'cbox-video') {
+                $.ajax(tl_banana.plurk[pid].clickUrl);
+                jQuery('#' + div.id.toString() + ' .text_holder a').trigger('dblclick');
+            }
+            else if (url == 'cbox-image') {
+                $.ajax(tl_banana.plurk[pid].clickUrl);
+                jQuery('#' + div.id.toString() + ' .text_holder a.pictureservices').trigger('dblclick');
+            }
+            else if (url == 'cbox-permalink') {
+                $.ajax(tl_banana.plurk[pid].clickUrl);
+                jQuery('#' + div.id.toString() + ' .text_holder a.plink').trigger('dblclick');
+            }
+            else {
+                window.open(tl_banana.plurk[pid].clickUrl);
+            }
+            
+            return false;
+        }
+    };
+
+    Slider = {        
+        adsObj: $('#sliderAds'),
+        adsInterval: null,
+        adsShowTime: null,
+        hideTimer: null,
+        showTimer: null,
+        position: 1,
+        logUrl: null,
+        
+        init: function() {
+            if (Slider.adsObj.size() == 0) return;
+            
+            // Show ads again after n after hideAds
+            Slider.adsInterval = Slider.adsObj.data('adsinterval') || 0;
+            Slider.adsInterval *= 1000;
+
+            // Each Ads showing n than autohide and rollover.
+            Slider.adsShowTime = Slider.adsObj.data('secshowtime') || 600;
+            Slider.adsShowTime *= 1000;
+            
+            // 1: bottom right  2: center right
+            Slider.position = Slider.adsObj.data('pos') || 1;
+            
+            setTimeout(Slider.getAds, 20000);
+  
+            Slider.adsObj.find('.btnClose').click(function() {
+                if (Slider.adsObj.hasClass('in')) {
+                    Slider.hideAds();
+                    window.clearTimeout(Slider.hideTimer);
+                } else { 
+                    Slider.showAds();
+                    window.clearTimeout(Slider.showTimer);
+                };
+            });
+        },
+        
+        appendMsg: function(element, height, width) {
+            Slider.adsObj.find('.adimg').remove();
+            $(element).addClass('.adimg').appendTo(Slider.adsObj);
+            
+            height = height || Slider.adsObj.outerHeight();
+            width = width || Slider.adsObj.outerWidth();
+        
+            if (Slider.position == 1)
+                Slider.adsObj.css({ 'bottom': 0 }); 
+            else
+                Slider.adsObj.css({ 'top': $('#bottom_line').offset().top - height - 10 }); 
+            
+            Slider.adsObj.css('right', width * -1).show();
+            
+            window.setTimeout(function() {
+                Slider.showAds();        
+            }, 5000);    // should be switch to 5000 before online
+        },
+
+        getAds: function() {
+            if (!window.OpenX) return;
+            OpenX.getAds(24, function(ads) {
+                if (!ads || !ads.imgUrl) return;
+
+                var adsImg = $("<img>").addClass('adimg')
+                    .each(function() {
+                        //Cache fix for browsers that don't trigger .load()
+                        if(this.complete) $(this).trigger('load');
+                    })
+                    .one('load', function() {
+                        if (this.height == 1) {
+                            setTimeout(Slider.getAds, Slider.adsInterval);
+                            return;
+                        };
+                        Slider.logUrl = ads.logUrl;
+                        Slider.appendMsg(adsImg, this.height, this.width);
+                    })
+                    .click(function() {
+                        window.open(ads.clickUrl);
+                        return false;
+                    })
+                    .attr('src', ads.imgUrl);
+            });
+            _gaq_push(['_trackEvent', 'slider_ads', 'request']);
+        },
+        
+        showAds: function() {
+            Slider.adsObj.addClass('in');
+            Slider.hideTimer = setTimeout(Slider.hideAds, Slider.adsShowTime);
+            
+            var logImg = new Image();
+            logImg.src = Slider.logUrl;
+            _gaq_push(['_trackEvent', 'timeline', 'slider_ads', 'show']);
+        },
+        
+        hideAds: function() {
+            Slider.adsObj.removeClass('in');
+//            Slider.adsObj.animate({right: "-=" + Slider.adsWidth + "px"}, 1000);
+            if (Slider.adsInterval)
+                Slider.showTimer = setTimeout(Slider.getAds, Slider.adsInterval);
+        }
+    };
+     
+    ToggleAds = {        
+        adsObj: $('#toggleAds'),
+        adsImgObj: null,
+        adsInterval: null,
+        adsShowTime: null,
+        hideTimer: null,
+        showTimer: null,
+        position: 1,
+        logUrl: null,
+        show: { boxW: 0, boxH:0, imgBottom:0, imgRight:0 },
+        hide: { boxW: 0, boxH:0 },
+        
+        init: function() {
+            if (ToggleAds.adsObj.size() == 0) return;
+            
+            // Show ads again after n after hideAds
+            ToggleAds.adsInterval = ToggleAds.adsObj.data('adsinterval') || 0;
+            ToggleAds.adsInterval *= 1000;
+
+            // Each Ads showing n than autohide and rollover.
+            ToggleAds.adsShowTime = ToggleAds.adsObj.data('secshowtime') || 600;
+            ToggleAds.adsShowTime *= 1000;
+
+            var adsData= ToggleAds.adsObj.data();
+            function replaceObjValue(oldObj, newObj) {
+                if( newObj ) {
+                    for( var key in newObj )
+                        if( key in oldObj )
+                           oldObj[key] = newObj[key]
+                }
+            }
+            replaceObjValue( ToggleAds.show, adsData.show );
+            replaceObjValue( ToggleAds.hide, adsData.hide );
+            
+            // 1: bottom right  2: center right
+            ToggleAds.position = ToggleAds.adsObj.data('pos') || 1;
+            
+            setTimeout(ToggleAds.getAds, 20000);
+  
+            ToggleAds.adsObj.find('.btnClose').click(function() {
+                if (ToggleAds.adsObj.hasClass('in')) {
+                    ToggleAds.hideAds();
+                    window.clearTimeout(ToggleAds.hideTimer);
+                }
+            });
+        },
+        
+        appendMsg: function(element, height, width) {
+            ToggleAds.adsObj.find('.adimg').remove();
+            $(element).addClass('adimg').appendTo(ToggleAds.adsObj);
+            
+            height = height || ToggleAds.adsObj.outerHeight();
+            width = width || ToggleAds.adsObj.outerWidth();
+        
+            if (ToggleAds.position == 2)  // center-right
+                ToggleAds.adsObj.css({ 'top': $('#bottom_line').offset().top - height - 10,
+                                       'bottom': 'auto'}); 
+
+            window.setTimeout(function() {
+                ToggleAds.showAds();        
+            }, 5000);    // should be switch to 5000 before online
+        },
+
+        getAds: function() {
+            if (!window.OpenX) return;
+            OpenX.getAds(24, function(ads) {
+                if (!ads || !ads.imgUrl) return;
+
+                var adsImg = ToggleAds.adsImgObj = $("<img>").addClass('adimg')
+                    .each(function() {
+                        //Cache fix for browsers that don't trigger .load()
+                        if(this.complete) $(this).trigger('load');
+                    })
+                    .one('load', function() {
+                        if (this.height == 1) {
+                            setTimeout(ToggleAds.getAds, ToggleAds.adsInterval);
+                            return;
+                        };
+                        ToggleAds.logUrl = ads.logUrl;
+                        ToggleAds.appendMsg(adsImg, this.height, this.width);
+                    })
+                    .click(function() {
+                        if( !ToggleAds.adsObj.hasClass('in') ) {
+                            ToggleAds.showAds();
+                            return false;
+                        }
+                        window.open(ads.clickUrl);
+                        return false;
+                    })
+                    .attr('src', ads.imgUrl);
+            });
+            _gaq_push(['_trackEvent', 'slider_ads', 'request']);
+        },
+        
+        showAds: function() {
+            ToggleAds.adsObj.addClass('in');
+            ToggleAds.adsImgObj.css({
+                'bottom': -ToggleAds.show.imgBottom,
+                'right': -ToggleAds.show.imgRight
+            });
+            ToggleAds.adsObj.css({
+                'width': ToggleAds.show.boxW,
+                'height': ToggleAds.show.boxH
+            }).show(0);
+            ToggleAds.hideTimer = setTimeout(ToggleAds.hideAds, ToggleAds.adsShowTime);
+            
+            var logImg = new Image();
+            logImg.src = ToggleAds.logUrl;
+            _gaq_push(['_trackEvent', 'timeline', 'slider_ads', 'show']);
+        },
+        
+        hideAds: function() {
+            ToggleAds.adsObj.removeClass('in');
+            ToggleAds.adsImgObj.css({
+                'bottom': 0,
+                'right': 0
+            });
+            ToggleAds.adsObj.css({
+                'width': ToggleAds.hide.boxW,
+                'height': ToggleAds.hide.boxH
+            });
+
+            if (ToggleAds.adsInterval)
+                ToggleAds.showTimer = setTimeout(ToggleAds.getAds, ToggleAds.adsInterval);
+        }
+    };
+
+    MallTipAds = {        
+        adsObj: $('#mallTipAds'),
+        $tDom: null,
+        $clickTrap: null,
+        adsInterval: null,
+        adsShowTime: 60000,
+        logUrl: null,
+        
+        init: function() {
+            var me = MallTipAds;
+            if (me.adsObj.size() == 0) return;
+            
+            // Show ads again after n after hideAds
+            me.adsInterval = me.adsObj.data('adsinterval') || 0;
+            me.adsInterval *= 1000;
+
+            // Each Ads showing n than autohide and rollover.
+            me.adsShowTime = me.adsObj.data('secshowtime') || 60;
+            me.adsShowTime *= 1000;
+            
+            setTimeout(me.getAds, 100);
+        },
+
+        getAds: function() {
+            var me = MallTipAds;
+        
+            if (!window.OpenX) return;
+            OpenX.getAds(40, function(ads) {
+                if (!ads || !ads.imgUrl) return;
+                
+                var adsImg = $("<img>")
+                    .each(function() {
+                        //Cache fix for browsers that don't trigger .load()
+                        if(this.complete) $(this).trigger('load');
+                    })
+                    .one('load', function() {
+                        if (this.height == 1) {
+                            setTimeout(me.getAds, me.adsInterval);
+                            return;
+                        };
+                        me.logUrl = ads.logUrl;
+                        me.appendMsg(adsImg, this.height / 2, this.width / 2, ads.clickUrl);
+                    })
+                    .attr('src', ads.imgUrl);
+            });
+            _gaq_push(['_trackEvent', 'MallTip_Ads', 'request']);
+        },
+
+        appendMsg: function(element, height, width, clickUrl) {
+            var me = MallTipAds;
+        
+            var height = height || me.adsObj.outerHeight();
+            var width = width || me.adsObj.outerWidth();
+
+            me.adsObj.find('.adlink').remove();
+            
+            var $adlink = $("<a class='adlink' target='_blank'>")
+                .attr({
+                    'href': clickUrl,
+                    'onclick': "_gaq_push(['_trackEvent', 'mall', 'ev_sprint', 'open_tl_tooltip'])"
+                })
+                .append(element)
+                .appendTo(me.adsObj);
+                
+            $adlink.find('img').css({'height': height, 'width': width});
+            
+            if (!me.$tDom) me.$tDom = $('#mallLink:visible');
+            if (!me.$tDom || !me.$tDom.length) return;
+            
+            me.$tDom.on('powerTipRender', function() {
+                var $pTip = $('#powerTip');
+                
+                $pTip.find('.adlink').click(function() {
+                    window.open(this.href);
+                    me.hideAds();
+                    return false;
+                });
+                    
+                $pTip.find('.btnClose').click(function() {
+                    me.hideAds();
+                    return false;
+                });
+            }).data('powertiptarget', 'mallTipAds').powerTip({
+                placement: 's',
+                	smartPlacement: true,
+                	manual: true
+            }).hover(function() {
+                me.showAds();
+            });
+            
+            me.$clickTrap = $('#mallTipClick');
+            me.$clickTrap.click(function() {
+                me.hideAds();
+                return true;
+            });
+            
+            if (document.cookie.replace(/(?:(?:^|.*;\s*)plurkmalltip\s*\=\s*([^;]*).*$)|^.*$/, "$1") != "true") 
+                window.setTimeout(function() {
+                    me.showAds();        
+                }, 1000);    // should be switch to 5000 before online
+        },
+
+        showAds: function() {
+            var me = MallTipAds;
+            
+            var Dt = new Date(Date.now() + (86400 * 1000));
+            document.cookie = "plurkmalltip=true; path=/; expires=" + Dt.toUTCString();
+
+            me.$clickTrap.addClass('show');
+            $.powerTip.show(me.$tDom);
+
+            setTimeout(me.hideAds, me.adsShowTime);
+            
+            var logImg = new Image();
+            logImg.src = me.logUrl;
+            _gaq_push(['_trackEvent', 'mall', 'ev_sprint', 'show_tl_tooltip']);
+        },
+        
+        hideAds: function() {
+            var me = MallTipAds;
+            me.$clickTrap.removeClass('show');
+            $.powerTip.hide(me.$tDom);
+            if (me.adsInterval) setTimeout(me.getAds, me.adsInterval);
+            _gaq_push(['_trackEvent', 'mall', 'ev_sprint', 'close_tl_tooltip']);
+        }
+    };
+    
+//  MallTipAds.init();
+//  ToggleAds.init(); 
+//  Slider.init(); 
+    tl_banana.init();
+    tl_native.init();
+});

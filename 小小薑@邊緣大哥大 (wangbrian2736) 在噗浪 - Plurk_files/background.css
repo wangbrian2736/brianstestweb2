@@ -1,0 +1,27 @@
+
+body, .bar-color{
+    background:#0c0c0c url(../image/dark-bg.gif) repeat-x;
+    font-family:Arial, Verdana;
+    color: white;
+}
+
+#footer a,
+#errors a, .error a {
+    color:#dfdfdf;
+}
+
+#footer {
+    color: #666;
+}
+
+#plurk_responses ul.responses .message, #plurk_responses ul.responses li img.avatar {
+    border-color:#eee;
+}
+
+.dash-segment img.profile-pic, #dash-friends-pics a, #dash-fans-pics a, #emoticon_selecter{    
+    border-color: #777;
+}
+
+.dash-segment{
+    background:none;
+}

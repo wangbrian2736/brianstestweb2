@@ -1,0 +1,67 @@
+;(function($){
+    StoreIntroTip = {
+        $holder:null,
+
+        show: function(hideButton, tipBtn){
+            var me = this;
+
+            var zh = window.LANG && window.LANG.indexOf('zh_') != -1;
+
+            var videoUrl = 'https://www.youtube.com/embed/hB7fj-T5FJg?rel=0&amp;controls=0&amp;showinfo=0';
+
+//http://plurk.solda.io/
+            me.$holder = $('<div class="tip_overlay"><div id="store_intro_tip_holder"><div class="tip_close pif-cancel" onclick="StoreIntroTip.hide()"></div><div class="video_holder"></div><div class="tip_holder"></div></div></div>').css('opacity',0);
+
+            if(!hideButton){
+                me.$holder.find('#store_intro_tip_holder')
+                .append('<a href="http://plurk.solda.io/" class="more" target="_blank">暸解更多</a><br />')
+                .append('<a href="/store/" class="button go">前往商店河道！</a>');
+            }
+
+            me.$holder.find('.video_holder').html('<iframe src="' + videoUrl + '" frameborder="0" allowfullscreen></iframe>');
+
+            $('body').append(me.$holder);
+            me.$holder.animate({
+                opacity:1.0
+            },300);
+
+            var resize = function(){
+                var ww = $(window).width(),
+                    wh = $(window).height();
+
+                var mw = Math.max(ww - 100, 480);
+                var mh = Math.min(Math.max(wh - 200, 320), 720);
+
+                var s = Math.min(mw / 640, mh / 360);
+
+                me.$holder.find('.video_holder iframe').css({'width':640 * s, 'height':360*s});
+            }
+
+            resize();
+            $(window).resize(function(){
+                resize();
+            });
+
+            document.cookie = "show_store_intro_tip=1; expires=" + (new Date((new Date()).getTime() + 5184000000)).toGMTString(); //keep 60days
+            $(tipBtn).addClass('close').find('.close').css('display','');
+        },
+
+        hide: function(){
+            var me = this;
+            me.$holder.animate({
+                opacity:0
+            },300, function() {
+                me.$holder.remove();
+            });
+        },
+
+        removeTipBtn: function(tipBtn){
+            $(tipBtn).animate({
+                marginTop:-50
+            }, 300, function(){
+                $(tipBtn).remove();
+                document.cookie = "show_store_intro_tip=2; expires=" + (new Date((new Date()).getTime() + 5184000000)).toGMTString(); //keep 60days
+            });
+        }
+    }
+})(jQuery);

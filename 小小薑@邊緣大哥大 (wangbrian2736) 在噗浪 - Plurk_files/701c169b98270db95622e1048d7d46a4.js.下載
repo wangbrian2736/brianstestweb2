@@ -1,0 +1,231 @@
+/*
+ * Implementation of script communication that:
+ *  - uses script tags for communication, but can detect when a script isn't loaded (this is non-trivial to implement across browsers)
+ *  - works across domains as long as you control the domains
+ *  - works on IE 6, IE 7, IE 8, FF X, Safari, Chrome and Opera
+ *  - small (80 lines of code) with no dependencies
+ *
+ * For more info and usage check out:
+ *    http://amix.dk/blog/post/19489#ScriptCommunicator-implementing-comet-long-polling-for-all-browse
+ *
+ * Made by amix the lucky stiff - amix.dk
+ * Copyright Plurk 2010, released under BSD license
+ */
+ScriptCommunicator = {
+    id: 0,
+    callback_called: false,
+
+    /*
+     * Important:
+     * The JavaScript you source must do some kind of call back into your code
+     * and this call back has to set ScriptCommunicator.callback_called = true
+     * for this to work!
+     */
+    sourceJavaScript: function(uri, on_success, on_error, xhr_timeout) {
+        var _dfd = jQuery.Deferred();
+
+        ScriptCommunicator.id = ScriptCommunicator.id + 1;
+        ScriptCommunicator.callback_called = false;
+
+        ScriptCommunicator._onSuccess = on_success;
+        ScriptCommunicator._onError = on_error;
+
+        var xhr = ScriptCommunicator.createCORSRequest('GET', uri);
+        var agent = navigator.userAgent.toLowerCase();
+
+        if(xhr) {
+            xhr.id = ScriptCommunicator.id;
+            xhr.onprogress = function(){ return; }; // looks like IE has to have something assigned to onprogress
+
+            xhr.onload = function() {
+                try {                
+                    if ((xhr.status && xhr.status == 200) || (xhr.responseText && xhr.responseText.indexOf('CometChannel.scriptCallback(') > -1))
+                        eval(xhr.responseText);
+                    else
+                        throw "unknown xhr responseText";
+                } catch (e) {
+                    _dfd.rejectWith(e.toString());                
+                };
+                
+                ScriptCommunicator._onSuccess();
+                ScriptCommunicator.deleteXHRobject(xhr);
+                _dfd.resolveWith(xhr.responseText);
+            };
+
+            xhr.ontimeout = function() {
+                ScriptCommunicator.deleteXHRobject(xhr);
+                _dfd.rejectWith('timeout');
+            };
+
+            xhr.onerror = function() {
+                ScriptCommunicator.callback_called = false;
+                if(ScriptCommunicator._onError) {
+                    ScriptCommunicator._onError();
+                }
+                
+                ScriptCommunicator.deleteXHRobject(xhr);
+                _dfd.rejectWith('error');
+            }
+
+            try {
+                xhr.timeout = xhr_timeout || 120000; // IE likes this to be explicit
+            }catch(e){
+                //IE will get InvalidStateError
+            }
+
+            setTimeout(function() {
+                ScriptCommunicator.openAndSendRequest(xhr, 'GET', uri);
+            }, 10);
+        }
+        else {
+            _dfd.rejectWith('NotSupportXHR');
+        }
+        return _dfd.promise();
+    },
+    
+    deleteXHRobject: function(xhr) {
+        xhr.onload = null;
+        xhr.ontimeout = null;
+        xhr.onerror = null;
+        xhr.onprogress = null;
+        delete xhr;
+    },
+
+    createCORSRequest: function (method, url){
+        var xhr = new XMLHttpRequest();
+
+        if("withCredentials" in xhr) {
+            return xhr;
+        }
+        else if (typeof XDomainRequest != "undefined") {
+            return new XDomainRequest();
+        }
+        return null;
+    },
+
+    openAndSendRequest: function (xhr, method, url) {
+        xhr.open(method, url, true);
+        xhr.send();
+    }
+}
+
+//function debugMsg(){
+//    if ((!window.top.Utils) || (!window.top.Utils.isBetaUser) || (!window.console)) return;    
+//    console.log(arguments);
+//};
+
+var CometChannel = {
+    channel_name: Comet_channel_name,
+    uri_root: function() { return Comet_uri_root || '/comet'; }(),
+    request_timeout: function() { return Comet_request_timeout || 10000; }(),
+    timeout_times: 0,
+    offset: 0,
+    lastOffset: null,
+
+    initVar: function() {
+        this.offset = 0;
+        this.lastOffset = null;
+        this.timeout_times = 0;
+    },
+
+    init: function(restartChannel) {
+        var restartChannel = restartChannel || false;
+        CometChannel.initVar();
+        
+        if (restartChannel){
+            setTimeout(top.Poll.checkPlurks, 1);
+            setTimeout(top.Poll.checkResponses, 1);
+        };
+
+        CometChannel.queryChannel();
+    },
+        
+    nullFunc: function() {    // do nothing
+    },
+    
+    queryChannel: function() {
+        var uri = CometChannel.getChannelURI();
+
+        jQuery.post('/_comet/p');
+
+        jQuery.when(ScriptCommunicator.sourceJavaScript(uri, CometChannel.nullFunc, CometChannel.nullFunc, CometChannel.request_timeout))
+            .fail(function() {
+                if (this == "NotSupportXHR"){
+                    CometChannel.repeatCheckPlurks();
+                    return;
+                };
+                CometChannel.onError();
+            });
+    },
+    
+    // For those not support XHR CORS browser, we do checkPlurks repeatly instead.
+    // IE <= 7 Safari <= 3 Firefox <= 3.0
+    repeatCheckPlurks: function() {
+        setInterval(top.Poll.checkPlurks, 30000);
+        setInterval(top.Poll.checkResponses, 15000);
+    },
+    
+    getChannelURI: function() {
+        var count = (new Date()).getTime(); //to disable caching
+        var args = "/?js_callback=CometChannel.scriptCallback&channel=" + CometChannel.channel_name;
+        var offset = CometChannel.offset || 0;
+        return CometChannel.uri_root + "/" + count + args + "&offset=" + offset;
+    },
+
+    /* Script callback - called from server side */
+    scriptCallback: function(data) {
+        ScriptCommunicator.callback_called = true;
+        
+        if (!data || !data.new_offset || data.new_offset == -3){
+            CometChannel.init(true);    // restart channel
+            return;
+        };
+        	
+        if (data.new_offset - CometChannel.offset > 1) {    // need resync
+            setTimeout(top.Poll.checkPlurks, 1);
+            setTimeout(top.Poll.checkResponses, 1);
+        }
+        
+        CometChannel.offset = data.new_offset;
+        CometChannel.timeout_times = 0;
+
+        setTimeout(function() {
+            CometChannel.queryChannel();
+        }, 300);
+        
+        if (data.data && (Array.isArray(data.data))){    //test if is array
+            	data.data.forEach(function(item) {
+                if(item.posted) 
+                    item.posted = new Date(item.posted)
+    
+                if (item.type == 'new_plurk' && top.cometNewPlurksCallback)
+                    top.cometNewPlurksCallback(name, [item])
+                else if(item.type == 'new_response' && top.cometNewResponsesCallback)
+                    top.cometNewResponsesCallback(name, [item])
+                else if(item.type == 'update_notification' && top.TopBar)
+                    top.TopBar.updateNotificationCount(item.count)
+                else
+                    top.Signals.sendSignal('comet_' + item.type, item);
+            	});
+        };
+    },
+    
+    onError: function(timeout) {
+        var timeout = timeout || '';
+                
+        if (CometChannel.timeout_times < 5)
+            CometChannel.timeout_times += 1;
+        else {
+            CometChannel.init(true); //restart
+            return;
+        }
+                
+        setTimeout(function() {
+            CometChannel.queryChannel();
+        }, CometChannel.timeout_times * 20000);    //add 20s delay on each timeout
+    }
+};
+
+jQuery(document).ready(function($) {
+    CometChannel.init();
+});

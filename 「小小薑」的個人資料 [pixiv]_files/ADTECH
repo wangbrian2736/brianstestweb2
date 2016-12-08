@@ -1,0 +1,5 @@
+document.write("<scr"+"ipt type='text/javascript'>\n");
+document.write("gpb_8984.passBack();\n");
+document.write("</scr"+"ipt>\n");
+
+

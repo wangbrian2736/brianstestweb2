@@ -1,0 +1,18 @@
+._lc_ , ._lch_  { background-image: url(http://i166.photobucket.com/albums/u93/limetastic/bg/225853.png); background-repeat: repeat; color: #ffffff; }
+._lc_ #top_login, ._lc_ #top_bar { color: #ffffff; }
+._lc_ #top_login a, ._lc_ #top_bar a { color: #ffffff; }
+._lc_ #timeline_holder { background-image: url(http://img.photobucket.com/albums/v132/mixxup/Image22-1.png); background-repeat: repeat-x; background-color: #FF742E; }
+._lc_ #plurk_form { color: #ffffff; }
+._lc_ #plurk_form a { color: #000000; }
+._lc_ #plurk_form a:hover { color: #000000; }
+._lc_ #plurk-dashboard { background-color: #FF742E; border: 5px solid #D03400; color: #ffffff; }
+._lc_ #plurk-dashboard a { color: #ffffff; }
+._lc_ #plurk-dashboard a:hover { color: #D11954; }
+._lc_ #about_me a, ._lc_ #show_all_friends a, ._lc_ #show_all_fans a { color: #FFFFFF; border-bottom: 1px dotted #D11954; }
+._lc_ #about_me a:hover, ._lc_ #show_all_friends a:hover, ._lc_ #show_all_fans a:hover { color: #ffffff; border-bottom: 1px solid #ffffff; }
+._lc_ #dash-stats h2, ._lc_ #dash-friends h2, ._lc_ #dash-fans h2 { border: 0px; color: #ffffff; background-color: #D03400; }
+._lc_ #profile_pic { border: 3px solid #ffffff; }
+._lc_ #full_name { font-weight: bold; }
+._lc_ #about_me { color: #ffffff; }
+._lc_ #relationship { color: #ffffff; }
+._lc_ #dash-stats table tbody tr td { color: #ffffff; }

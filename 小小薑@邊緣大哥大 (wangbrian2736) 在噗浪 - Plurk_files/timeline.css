@@ -1,0 +1,53 @@
+#timeline_holder {
+    background:#b3d1de url(../image/dark-time-bg.gif) repeat-x;
+    height: 386px !important;
+}
+
+.new .response_count {
+    color: #fff !important;
+}
+
+.response_count, .plurk_box .caption {
+    background: #eee;
+    color:#444;
+}
+
+.day_bg .div_inner {
+    background:#F4F4F4;
+    width:20px;
+    position:relative;
+    margin-left:4px;
+}
+
+.day_start .div_bottom, .response_count, .day_start .bottom_start{
+    color: #444!important;
+}
+
+.bottom_start, .bottom_end {
+    color: #444;
+}
+
+.div_inner, #timeline_holder {
+    color: #000;
+}
+
+.highlight_light {
+    color:#258CB9;
+}
+
+.evening, .night, .day, .morning {
+    background-color:#587d93;
+}
+
+#time_show span {
+    color:#FFF;
+}
+
+#updater .item a:hover,
+#filter_tab a.filter_selected{
+    background: #587d93;
+}
+
+#updater .item a{
+    color:#587d93;
+}
